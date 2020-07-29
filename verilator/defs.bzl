@@ -26,13 +26,19 @@ def get_transitive_sources(srcs, deps):
     )
 
 def _sv_library(ctx):
-    transitive_sources = get_transitive_sources(ctx.files.srcs, ctx.attr.deps)
+    transitive_sources = get_transitive_sources(
+        ctx.files.srcs + ctx.files.hdrs,
+        ctx.attr.deps,
+    )
     return [VerilogInfo(transitive_sources = transitive_sources)]
 
 sv_library = rule(
     attrs = {
         "srcs": attr.label_list(
             allow_files = [".v", ".sv"],
+        ),
+        "hdrs": attr.label_list(
+            allow_files = [".v", ".sv", ".vh", ".svh"],
         ),
         "deps": attr.label_list(providers = [VerilogInfo]),
     },
