@@ -1,0 +1,24 @@
+module(
+    name = "rules_verilator",
+    version = "0.0.1",
+    compatibility_level = 1,
+)
+
+bazel_dep(name = "rules_m4", version = "0.2.3")
+bazel_dep(name = "rules_flex", version = "0.2.1")
+bazel_dep(name = "rules_bison", version = "0.3")
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "rules_verilog",
+    urls = ["https://github.com/agoessling/rules_verilog/archive/v0.1.0.zip"],
+    strip_prefix = "rules_verilog-0.1.0",
+    sha256 = "401b3f591f296f6fd2f6656f01afc1f93111e10b81b9a9d291f9c04b3e4a3e8b",
+)
+
+verilator = use_extension("//verilator:extensions.bzl", "verilator_toolchain")
+verilator.toolchain(version = "4.224")
+use_repo(verilator, "verilator_v4.224")
+
+register_toolchains("@rules_verilator//verilator/toolchains:v4.224")
